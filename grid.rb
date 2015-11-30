@@ -3,7 +3,7 @@ require_relative 'cell'
 class Grid
   attr_reader :rows, :columns
 
-  def initialize(row, columns)
+  def initialize(rows, columns)
     @rows = rows
     @columns = columns
 
@@ -44,7 +44,7 @@ class Grid
   end
 
   def size
-    @rows = column
+    @rows * column
   end
 
   def each_row
@@ -59,5 +59,32 @@ class Grid
         yield cell if cell
       end
     end
+  end
+
+  def to_s
+    output = "+" + "---+" * columns + "\n"
+
+    each_row do |row|
+      top = "|"
+      bottom = "+"
+
+      row.each do |cell|
+        cell = Cell.new(-1, -1) unless cell
+
+        body = "   "
+        east_boundary = (cell.linked?(cell.east) ? " " : "|")
+
+        top << body << east_boundary
+
+        south_boundary = (cell.linked?(cell.south) ? "   " : "---")
+        corner = "+"
+        bottom << south_boundary << corner
+      end
+
+      output << top << "\n"
+      output << bottom << "\n"
+    end
+
+    output
   end
 end
